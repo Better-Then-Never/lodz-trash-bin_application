@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/lodz_trash_bin.iml" filepath="$PROJECT_DIR$/lodz_trash_bin.iml" />
+      <module fileurl="file://$PROJECT_DIR$/android/lodz_trash_bin_android.iml" filepath="$PROJECT_DIR$/android/lodz_trash_bin_android.iml" />
+    </modules>
+  </component>
+</project>

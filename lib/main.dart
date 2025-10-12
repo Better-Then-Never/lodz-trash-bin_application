@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_lucide/flutter_lucide.dart';
 import 'package:lodz_trash_bin/views/pages/profile_page.dart';
+import 'package:lodz_trash_bin/views/pages/qr_scanner_page.dart';
+import 'package:lodz_trash_bin/views/pages/shop_page.dart';
 import 'package:lodz_trash_bin/views/widgets/navigation_bar/navigation_bar_button.dart';
 
 void main() {
@@ -36,8 +38,8 @@ class _NavigationViewState extends State<NavigationView> {
   int _selectedIndex = 1;
 
   final List<Widget> _pages = const [
-    Center(child: Text('Shop Page')),
-    Center(child: Text('Qr Page')),
+    ShopPage(),
+    QRScannerPage(),
     ProfilePage(),
   ];
 

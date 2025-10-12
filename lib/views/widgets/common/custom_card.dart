@@ -18,7 +18,7 @@ class CustomCard extends StatelessWidget {
         height: height,
         padding: const EdgeInsets.all(16.0),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: const Color.fromARGB(255, 255, 255, 255),
           borderRadius: BorderRadius.circular(16),
           border: Border.all(color: borderColor, width: 0.5),
           boxShadow: [

@@ -3,20 +3,18 @@ import 'package:flutter_lucide/flutter_lucide.dart';
 import 'package:lodz_trash_bin/views/pages/show_reward_page.dart';
 import 'package:lodz_trash_bin/views/widgets/common/custom_card.dart';
 
-class ShopRewardCard extends StatelessWidget {
+class ShopRedeemedCard extends StatelessWidget {
   final String title;
   final String subtitle;
   final String discountLabel;
   final String categoryLabel;
-  final int points;
 
-  const ShopRewardCard({
+  const ShopRedeemedCard({
     super.key,
     required this.title,
     required this.subtitle,
     required this.discountLabel,
     required this.categoryLabel,
-    required this.points,
   });
 
   @override
@@ -81,63 +79,23 @@ class ShopRewardCard extends StatelessWidget {
               ),
             ],
           ),
-          SizedBox(height: screenHeight * 0.01),
+          Divider(color: const Color.fromARGB(255, 196, 196, 196)),
           Row(
             children: [
-              const Icon(LucideIcons.coins, color: Colors.grey, size: 22),
-              SizedBox(width: screenWidth * 0.03),
-              FittedBox(
-                fit: BoxFit.scaleDown,
-                child: Text(
-                  '$points punktów',
-                  style: TextStyle(fontSize: screenWidth * 0.04),
-                ),
+              const Text(
+                'Ważny do: 12-10-2026',
+                style: TextStyle(fontSize: 14, color: Colors.grey),
               ),
-              const Spacer(),
+              Spacer(),
               InkWell(
                 onTap: () {
-                  showDialog(
-                    context: context,
-                    builder: (context) => AlertDialog(
-                      titlePadding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
-                      contentPadding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
-                      actionsPadding: const EdgeInsets.symmetric(
-                        horizontal: 8,
-                        vertical: 8,
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => ShowRewardPage(
+                        discountLabel: discountLabel,
+                        title: title,
+                        subtitle: subtitle,
                       ),
-                      title: const Text(
-                        'Potwierdzenie',
-                        style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      content: Text(
-                        'Czy na pewno chcesz odebrać $title za $points punktów?',
-                        style: const TextStyle(fontSize: 16),
-                      ),
-                      actions: [
-                        TextButton(
-                          onPressed: () => Navigator.of(context).pop(),
-                          child: const Text('Nie'),
-                        ),
-                        TextButton(
-                          onPressed: () {
-                            Navigator.of(context).pop();
-                            Navigator.of(context).push(
-                              MaterialPageRoute(
-                                builder: (context) => ShowRewardPage(
-                                  discountLabel: discountLabel,
-                                  title: title,
-                                  subtitle: subtitle,
-                                  isAfterPurchase: true,
-                                ),
-                              ),
-                            );
-                          },
-                          child: const Text('Odbierz'),
-                        ),
-                      ],
                     ),
                   );
                 },
@@ -152,7 +110,7 @@ class ShopRewardCard extends StatelessWidget {
                     child: FittedBox(
                       fit: BoxFit.scaleDown,
                       child: const Text(
-                        'Odbierz',
+                        'Pokaż',
                         style: TextStyle(
                           fontSize: 14,
                           color: Colors.white,

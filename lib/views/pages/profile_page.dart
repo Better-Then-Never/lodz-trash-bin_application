@@ -12,6 +12,7 @@ class ProfilePage extends StatefulWidget {
   State<ProfilePage> createState() => _ProfilePageState();
 }
 
+// TODO: Replace with actual data
 class _ProfilePageState extends State<ProfilePage> {
   @override
   Widget build(BuildContext context) {
@@ -19,7 +20,6 @@ class _ProfilePageState extends State<ProfilePage> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          SizedBox(height: 16),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
             child: const UserInfo(),

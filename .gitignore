@@ -12,6 +12,7 @@
 
 # env
 *.env
+android/app/google-services.json
 
 # Generated files
 bin/

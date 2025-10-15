@@ -1,7 +1,7 @@
-import 'dart:convert';
+import 'dart:async';
+
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class DisposeSessionPage extends StatefulWidget {
   final String binId;
@@ -13,35 +13,66 @@ class DisposeSessionPage extends StatefulWidget {
 }
 
 class _DisposeSessionPageState extends State<DisposeSessionPage> {
-  final String databaseUrl = dotenv.env['FIREBASE_DB_URL'] ?? '';
+  late DatabaseReference binRef;
+  int startingTimesDisposed = 0;
+  int pointsToAdd = 0;
+
+  StreamSubscription<DatabaseEvent>? _timesDisposedSubscription;
 
   @override
   void initState() {
     super.initState();
+
+    binRef = FirebaseDatabase.instance
+        .ref()
+        .child('BinsData')
+        .child(widget.binId);
+
     _updateLedStatus(true);
+
+    binRef.child('times_disposed').get().then((snapshot) {
+      final value = snapshot.value;
+      if (value is int) {
+        startingTimesDisposed = value;
+      }
+
+      _timesDisposedSubscription = binRef
+          .child('times_disposed')
+          .onValue
+          .listen((event) {
+            final currentValue = event.snapshot.value;
+            if (currentValue is int) {
+              final added = currentValue - startingTimesDisposed;
+              if (added > pointsToAdd) {
+                setState(() {
+                  pointsToAdd = added;
+                });
+              }
+            }
+          });
+    });
   }
 
   Future<void> _updateLedStatus(bool status) async {
-    final url = Uri.parse(
-      '$databaseUrl/BinsData/${widget.binId}/led_status.json',
-    );
-
     try {
-      final response = await http.put(url, body: jsonEncode(status));
-
-      if (response.statusCode == 200) {
-        print('LED status updated successfully: $status');
-      } else {
-        print('Failed to update LED status: ${response.statusCode}');
-      }
+      await binRef.child('led_status').set(status);
+      print('LED status updated: $status');
     } catch (e) {
       print('Error updating LED status: $e');
     }
   }
 
   @override
+  void dispose() {
+    _timesDisposedSubscription?.cancel();
+    _updateLedStatus(false);
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final screenHeight = MediaQuery.of(context).size.height;
+
     return SafeArea(
       top: false,
       child: Scaffold(
@@ -79,7 +110,7 @@ class _DisposeSessionPageState extends State<DisposeSessionPage> {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 SizedBox(height: screenHeight * 0.25),
-                FittedBox(
+                const FittedBox(
                   fit: BoxFit.scaleDown,
                   alignment: Alignment.centerLeft,
                   child: Text(
@@ -87,7 +118,7 @@ class _DisposeSessionPageState extends State<DisposeSessionPage> {
                     style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
                   ),
                 ),
-                FittedBox(
+                const FittedBox(
                   fit: BoxFit.scaleDown,
                   alignment: Alignment.centerLeft,
                   child: Text(
@@ -99,7 +130,7 @@ class _DisposeSessionPageState extends State<DisposeSessionPage> {
                   fit: BoxFit.scaleDown,
                   alignment: Alignment.centerLeft,
                   child: Text(
-                    '+0',
+                    '+$pointsToAdd',
                     style: TextStyle(
                       fontSize: screenHeight * 0.1,
                       fontWeight: FontWeight.bold,

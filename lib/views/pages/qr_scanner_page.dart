@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lodz_trash_bin/views/pages/dispose_session_page.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 
 class QRScannerPage extends StatefulWidget {
@@ -19,20 +20,35 @@ class _QRScannerPageState extends State<QRScannerPage> {
     super.dispose();
   }
 
+  @override
+  void initState() {
+    super.initState();
+    _isScanning = true;
+  }
+
   void _onDetect(BarcodeCapture capture) {
     if (_isScanning && capture.barcodes.isNotEmpty) {
       final String? code = capture.barcodes.first.rawValue;
       if (code != null) {
         setState(() {
           scannedData = code;
+          if (scannedData != "F6D4dUaiQ8Ree8f1yQuaVxgk2t23") {
+            return;
+          }
           _isScanning = false;
         });
-        Future.delayed(const Duration(seconds: 2), () {
-          if (mounted) {
+
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => DisposeSessionPage(binId: scannedData!),
+            ),
+          ).then((_) {
             setState(() {
               _isScanning = true;
             });
-          }
+          });
         });
       }
     }
@@ -85,17 +101,6 @@ class _QRScannerPageState extends State<QRScannerPage> {
               ],
             ),
           ),
-          // if (scannedData != null)
-          //   Positioned(
-          //     top: squareTopOffset + overlaySize + 60, // below the instruction
-          //     left: 0,
-          //     right: 0,
-          //     child: Text(
-          //       'Scanned: $scannedData',
-          //       style: const TextStyle(color: Colors.greenAccent, fontSize: 16),
-          //       textAlign: TextAlign.center,
-          //     ),
-          //   ),
         ],
       ),
     );

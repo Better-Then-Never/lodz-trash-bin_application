@@ -29,12 +29,9 @@ class _QRScannerPageState extends State<QRScannerPage> {
   void _onDetect(BarcodeCapture capture) {
     if (_isScanning && capture.barcodes.isNotEmpty) {
       final String? code = capture.barcodes.first.rawValue;
-      if (code != null) {
+      if (code == "F6D4dUaiQ8Ree8f1yQuaVxgk2t23") {
         setState(() {
           scannedData = code;
-          if (scannedData != "F6D4dUaiQ8Ree8f1yQuaVxgk2t23") {
-            return;
-          }
           _isScanning = false;
         });
 

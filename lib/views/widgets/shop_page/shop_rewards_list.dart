@@ -13,14 +13,24 @@ class ShopRewardsList extends StatelessWidget {
         itemCount: rewards.length,
         itemBuilder: (context, index) {
           final reward = rewards[index];
+          final discountValue = reward['discountInPercents'];
+          final discountString = discountValue == null
+              ? '0%'
+              : (discountValue is num
+                    ? '${discountValue.toInt()}%'
+                    : discountValue.toString().replaceAll(
+                            RegExp(r'[^0-9]'),
+                            '',
+                          ) +
+                          '%');
           return Padding(
             padding: const EdgeInsets.only(bottom: 16.0),
             child: ShopRewardCard(
               title: reward['title'],
               subtitle: reward['subtitle'],
-              discountLabel: reward['discountLabel'],
-              categoryLabel: reward['categoryLabel'],
-              points: reward['points'],
+              discountLabel: discountString,
+              categoryLabel: reward['category'],
+              points: reward['pricePoints'],
             ),
           );
         },

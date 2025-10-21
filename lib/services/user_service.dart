@@ -15,6 +15,10 @@ class UserService extends ChangeNotifier {
   String? get name => _currentUserData?['name'];
   String? get username => _currentUserData?['username'];
   String? get email => _currentUserData?['email'];
+  int get pointsBalance => _currentUserData?['pointsBalance'] ?? 0;
+  int get totalSessions => _currentUserData?['totalSessions'] ?? 0;
+  int get currentMonthSessions =>
+      _currentUserData?['currentMonthSessions'] ?? 0;
 
   Future<void> init() async {
     final user = _auth.currentUser;
@@ -28,6 +32,45 @@ class UserService extends ChangeNotifier {
       _currentUserData = doc.data();
       notifyListeners();
     });
+  }
+
+  Future<void> updatePoints(int newBalance) async {
+    final user = _auth.currentUser;
+    if (user == null) return;
+
+    await _firestore.collection('users').doc(user.uid).update({
+      'pointsBalance': newBalance,
+    });
+
+    _currentUserData?['pointsBalance'] = newBalance;
+    notifyListeners();
+  }
+
+  Future<void> changePoints(int amount) async {
+    final user = _auth.currentUser;
+    if (user == null) return;
+
+    final current = _currentUserData?['pointsBalance'] ?? 0;
+    final updated = current + amount;
+
+    await updatePoints(updated);
+  }
+
+  Future<void> incrementSessions() async {
+    final user = _auth.currentUser;
+    if (user == null) return;
+    final currentTotal = _currentUserData?['totalSessions'] ?? 0;
+    final currentMonth = _currentUserData?['currentMonthSessions'] ?? 0;
+    final updatedTotal = currentTotal + 1;
+    final updatedMonth = currentMonth + 1;
+    await _firestore.collection('users').doc(user.uid).update({
+      'totalSessions': updatedTotal,
+      'currentMonthSessions': updatedMonth,
+    });
+
+    _currentUserData?['totalSessions'] = updatedTotal;
+    _currentUserData?['currentMonthSessions'] = updatedMonth;
+    notifyListeners();
   }
 
   Future<void> logout() async {

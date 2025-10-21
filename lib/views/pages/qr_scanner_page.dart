@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:lodz_trash_bin/services/user_service.dart';
 import 'package:lodz_trash_bin/views/pages/dispose_session_page.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
+import 'package:provider/provider.dart';
 
 class QRScannerPage extends StatefulWidget {
   const QRScannerPage({super.key});
@@ -26,7 +28,7 @@ class _QRScannerPageState extends State<QRScannerPage> {
     _isScanning = true;
   }
 
-  void _onDetect(BarcodeCapture capture) {
+  void _onDetect(BarcodeCapture capture, UserService userService) {
     if (_isScanning && capture.barcodes.isNotEmpty) {
       final String? code = capture.barcodes.first.rawValue;
       if (code == "F6D4dUaiQ8Ree8f1yQuaVxgk2t23") {
@@ -39,7 +41,10 @@ class _QRScannerPageState extends State<QRScannerPage> {
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => DisposeSessionPage(binId: scannedData!),
+              builder: (context) => DisposeSessionPage(
+                binId: scannedData!,
+                userService: userService,
+              ),
             ),
           ).then((_) {
             setState(() {
@@ -53,6 +58,7 @@ class _QRScannerPageState extends State<QRScannerPage> {
 
   @override
   Widget build(BuildContext context) {
+    final userService = Provider.of<UserService>(context);
     final screenWidth = MediaQuery.of(context).size.width;
     final overlaySize = screenWidth * 0.7;
 
@@ -62,7 +68,10 @@ class _QRScannerPageState extends State<QRScannerPage> {
       backgroundColor: Colors.black,
       body: Stack(
         children: [
-          MobileScanner(controller: cameraController, onDetect: _onDetect),
+          MobileScanner(
+            controller: cameraController,
+            onDetect: (capture) => _onDetect(capture, userService),
+          ),
           CustomPaint(
             size: MediaQuery.of(context).size,
             painter: ScannerOverlayPainter(

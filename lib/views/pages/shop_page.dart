@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:lodz_trash_bin/services/offer_service.dart';
+import 'package:lodz_trash_bin/services/user_service.dart';
 import 'package:lodz_trash_bin/views/widgets/shop_page/shop_my_points_count.dart';
 import 'package:lodz_trash_bin/views/widgets/shop_page/shop_rewards_list.dart';
-import 'package:lodz_trash_bin/views/widgets/shop_page/shop_redeemed_list.dart'; // new mock list
+import 'package:lodz_trash_bin/views/widgets/shop_page/shop_redeemed_list.dart';
+import 'package:provider/provider.dart'; // new mock list
 
 class ShopPage extends StatefulWidget {
   const ShopPage({super.key});
@@ -64,6 +67,9 @@ class _ShopPageState extends State<ShopPage> {
   Widget build(BuildContext context) {
     final double screenWidth = MediaQuery.of(context).size.width;
     final double screenHeight = MediaQuery.of(context).size.height;
+    final userService = Provider.of<UserService>(context);
+    final offerService = Provider.of<OfferService>(context);
+    final offers = offerService.offers;
 
     return SafeArea(
       child: Padding(
@@ -103,7 +109,7 @@ class _ShopPageState extends State<ShopPage> {
                 ShopMyPointsCount(
                   screenWidth: screenWidth,
                   screenHeight: screenHeight,
-                  points: 13,
+                  points: userService.pointsBalance,
                 ),
               ],
             ),
@@ -137,8 +143,8 @@ class _ShopPageState extends State<ShopPage> {
               child: AnimatedSwitcher(
                 duration: const Duration(milliseconds: 250),
                 child: showRewards
-                    ? ShopRewardsList(rewards: rewards)
-                    : ShopRedeemedList(rewards: redeemedRewards),
+                    ? ShopRewardsList(rewards: offers)
+                    : ShopRedeemedList(rewards: []),
               ),
             ),
           ],

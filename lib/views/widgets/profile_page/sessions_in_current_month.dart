@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_lucide/flutter_lucide.dart';
+import 'package:lodz_trash_bin/services/user_service.dart';
 import 'package:lodz_trash_bin/views/widgets/common/custom_card.dart';
 
 class SessionInCurrentMonth extends StatelessWidget {
-  const SessionInCurrentMonth({super.key});
+  const SessionInCurrentMonth({super.key, required this.userService});
+
+  final UserService userService;
 
   @override
   Widget build(BuildContext context) {
@@ -22,9 +25,12 @@ class SessionInCurrentMonth extends StatelessWidget {
               ),
             ],
           ),
-          const Row(
+          Row(
             children: [
-              Text('14', style: TextStyle(fontSize: 30, color: Colors.black)),
+              Text(
+                userService.currentMonthSessions.toString(),
+                style: TextStyle(fontSize: 30, color: Colors.black),
+              ),
             ],
           ),
         ],

@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_lucide/flutter_lucide.dart';
+import 'package:lodz_trash_bin/services/user_service.dart';
 import 'package:lodz_trash_bin/views/widgets/common/custom_card.dart';
 
 class MyPointsCount extends StatelessWidget {
-  const MyPointsCount({super.key});
+  const MyPointsCount({super.key, required this.userService});
+
+  final UserService userService;
 
   @override
   Widget build(BuildContext context) {
@@ -22,10 +25,10 @@ class MyPointsCount extends StatelessWidget {
           Row(
             children: [
               RichText(
-                text: const TextSpan(
+                text: TextSpan(
                   children: [
                     TextSpan(
-                      text: '1,247',
+                      text: userService.pointsBalance.toString(),
                       style: TextStyle(fontSize: 30, color: Colors.black),
                     ),
                     TextSpan(

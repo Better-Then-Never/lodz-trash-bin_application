@@ -2,11 +2,18 @@ import 'dart:async';
 
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
+import 'package:lodz_trash_bin/services/user_service.dart';
 
 class DisposeSessionPage extends StatefulWidget {
   final String binId;
 
-  const DisposeSessionPage({super.key, required this.binId});
+  const DisposeSessionPage({
+    super.key,
+    required this.binId,
+    required this.userService,
+  });
+
+  final UserService userService;
 
   @override
   State<DisposeSessionPage> createState() => _DisposeSessionPageState();
@@ -66,6 +73,11 @@ class _DisposeSessionPageState extends State<DisposeSessionPage> {
   void dispose() {
     _timesDisposedSubscription?.cancel();
     _updateLedStatus(false);
+    final userService = widget.userService;
+    if (pointsToAdd > 0) {
+      userService.changePoints(pointsToAdd);
+      userService.incrementSessions();
+    }
     super.dispose();
   }
 

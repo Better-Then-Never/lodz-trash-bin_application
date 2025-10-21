@@ -2,6 +2,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_lucide/flutter_lucide.dart';
 import 'package:lodz_trash_bin/firebase_options.dart';
+import 'package:lodz_trash_bin/services/offer_service.dart';
 import 'package:lodz_trash_bin/services/user_service.dart';
 import 'package:lodz_trash_bin/views/pages/profile_page.dart';
 import 'package:lodz_trash_bin/views/pages/qr_scanner_page.dart';
@@ -15,11 +16,19 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await dotenv.load(fileName: ".env");
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+
   final userService = UserService();
+  final offerService = OfferService();
+
   await userService.init();
+  await offerService.init();
+
   runApp(
-    ChangeNotifierProvider(
-      create: (_) => userService,
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider<UserService>.value(value: userService),
+        ChangeNotifierProvider<OfferService>.value(value: offerService),
+      ],
       child: const LodzTrashBinApp(),
     ),
   );

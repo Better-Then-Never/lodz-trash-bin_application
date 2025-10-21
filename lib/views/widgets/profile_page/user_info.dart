@@ -5,11 +5,12 @@ import 'package:lodz_trash_bin/services/user_service.dart';
 import 'package:lodz_trash_bin/views/pages/auth_page.dart';
 
 class UserInfo extends StatelessWidget {
-  const UserInfo({super.key});
+  const UserInfo({super.key, required this.userService});
+
+  final UserService userService;
 
   @override
   Widget build(BuildContext context) {
-    final userService = Provider.of<UserService>(context);
     final authService = AuthService();
 
     final name = userService.name ?? 'Guest';

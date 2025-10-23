@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_lucide/flutter_lucide.dart';
+import 'package:lodz_trash_bin/services/user_service.dart';
 import 'package:lodz_trash_bin/views/pages/show_reward_page.dart';
 import 'package:lodz_trash_bin/views/widgets/common/custom_card.dart';
 
@@ -9,6 +10,8 @@ class ShopRewardCard extends StatelessWidget {
   final String discountLabel;
   final String categoryLabel;
   final int points;
+  final UserService userService;
+  final String offerId;
 
   const ShopRewardCard({
     super.key,
@@ -17,6 +20,8 @@ class ShopRewardCard extends StatelessWidget {
     required this.discountLabel,
     required this.categoryLabel,
     required this.points,
+    required this.userService,
+    required this.offerId,
   });
 
   @override
@@ -81,7 +86,7 @@ class ShopRewardCard extends StatelessWidget {
               ),
             ],
           ),
-          SizedBox(height: screenHeight * 0.01),
+          Divider(color: const Color.fromARGB(255, 196, 196, 196)),
           Row(
             children: [
               const Icon(LucideIcons.coins, color: Colors.grey, size: 22),
@@ -96,6 +101,9 @@ class ShopRewardCard extends StatelessWidget {
               const Spacer(),
               InkWell(
                 onTap: () {
+                  if (userService.pointsBalance < points) {
+                    return;
+                  }
                   showDialog(
                     context: context,
                     builder: (context) => AlertDialog(
@@ -123,6 +131,8 @@ class ShopRewardCard extends StatelessWidget {
                         ),
                         TextButton(
                           onPressed: () {
+                            userService.changePoints(-points);
+                            userService.addRewardReference(offerId);
                             Navigator.of(context).pop();
                             Navigator.of(context).push(
                               MaterialPageRoute(
@@ -144,7 +154,9 @@ class ShopRewardCard extends StatelessWidget {
                 child: CustomCard(
                   withBorder: false,
                   padding: EdgeInsetsGeometry.zero,
-                  color: const Color.fromARGB(255, 114, 228, 69),
+                  color: userService.pointsBalance >= points
+                      ? const Color.fromARGB(255, 114, 228, 69)
+                      : const Color.fromARGB(255, 158, 223, 132),
                   height: screenHeight * 0.04,
                   width: screenWidth * 0.3,
                   borderRadius: 8,

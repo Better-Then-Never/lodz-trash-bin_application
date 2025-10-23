@@ -25,6 +25,7 @@ class AuthService {
           'name': name,
           'username': username,
           'achievements': [],
+          'rewards': [],
           'pointsBalance': 0,
           'pointsEarned': 0,
           'totalSessions': 0,

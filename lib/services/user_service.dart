@@ -7,8 +7,16 @@ class UserService extends ChangeNotifier {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   Map<String, dynamic>? _currentUserData;
+  List<Map<String, dynamic>> _rewards = [];
 
   Map<String, dynamic>? get currentUserData => _currentUserData;
+  List<Map<String, dynamic>> get rewards => _rewards;
+  List<String> get redeemedOfferIds {
+    return _rewards
+        .map((reward) => (reward['id'] as String?) ?? '')
+        .where((id) => id.isNotEmpty)
+        .toList();
+  }
 
   User? get currentUser => _auth.currentUser;
 
@@ -26,12 +34,74 @@ class UserService extends ChangeNotifier {
 
     final doc = await _firestore.collection('users').doc(user.uid).get();
     _currentUserData = doc.data();
+
+    await _fetchRewards();
     notifyListeners();
 
-    _firestore.collection('users').doc(user.uid).snapshots().listen((doc) {
+    _firestore.collection('users').doc(user.uid).snapshots().listen((
+      doc,
+    ) async {
       _currentUserData = doc.data();
+      await _fetchRewards();
       notifyListeners();
     });
+  }
+
+  bool _isFetchingRewards = false;
+
+  Future<void> _fetchRewards() async {
+    if (_isFetchingRewards) return;
+    _isFetchingRewards = true;
+
+    final rewardsRefs = _currentUserData?['rewards'];
+    final List<Map<String, dynamic>> fetched = [];
+
+    if (rewardsRefs is List) {
+      for (final ref in rewardsRefs) {
+        if (ref is DocumentReference) {
+          final offerDoc = await ref.get();
+          if (offerDoc.exists) {
+            final data = offerDoc.data() as Map<String, dynamic>;
+            data['id'] = offerDoc.id;
+            fetched.add(data);
+          }
+        }
+      }
+    }
+
+    _rewards = fetched;
+    _isFetchingRewards = false;
+    notifyListeners();
+  }
+
+  Future<void> addRewardReference(String offerId) async {
+    final user = _auth.currentUser;
+    if (user == null) return;
+
+    final DocumentReference offerRef = _firestore
+        .collection('offers')
+        .doc(offerId);
+
+    try {
+      await _firestore.collection('users').doc(user.uid).update({
+        'rewards': FieldValue.arrayUnion([offerRef]),
+      });
+
+      final offerDoc = await offerRef.get();
+      if (offerDoc.exists) {
+        final data = offerDoc.data() as Map<String, dynamic>;
+        data['id'] = offerDoc.id;
+
+        if (!_rewards.any((r) => r['id'] == offerDoc.id)) {
+          _rewards.add(data);
+          notifyListeners();
+        }
+      }
+    } catch (e) {
+      if (kDebugMode) {
+        print('Error adding reward reference for offer $offerId: $e');
+      }
+    }
   }
 
   Future<void> updatePoints(int newBalance) async {
@@ -76,6 +146,7 @@ class UserService extends ChangeNotifier {
   Future<void> logout() async {
     await _auth.signOut();
     _currentUserData = null;
+    _rewards = [];
     notifyListeners();
   }
 }

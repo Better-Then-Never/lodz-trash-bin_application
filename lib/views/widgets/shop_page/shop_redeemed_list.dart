@@ -1,14 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:lodz_trash_bin/services/user_service.dart';
 import 'package:lodz_trash_bin/views/widgets/shop_page/shop_redeemed_card.dart';
+import 'package:provider/provider.dart';
 
 class ShopRedeemedList extends StatelessWidget {
-  final List<Map<String, dynamic>> rewards;
-
-  const ShopRedeemedList({super.key, required this.rewards});
+  const ShopRedeemedList({super.key});
 
   @override
   Widget build(BuildContext context) {
-    if (rewards.isEmpty) {
+    final userService = context.watch<UserService>();
+    final redeemedRewards = userService.rewards;
+
+    if (redeemedRewards.isEmpty) {
       return Center(
         child: Text(
           'Nie masz rabatów',
@@ -18,16 +21,16 @@ class ShopRedeemedList extends StatelessWidget {
     }
 
     return ListView.builder(
-      itemCount: rewards.length,
+      itemCount: redeemedRewards.length,
       itemBuilder: (context, index) {
-        final reward = rewards[index];
+        final reward = redeemedRewards[index];
         return Padding(
-          padding: const EdgeInsets.only(bottom: 16.0),
+          padding: const EdgeInsets.only(bottom: 8.0),
           child: ShopRedeemedCard(
             title: reward['title'],
             subtitle: reward['subtitle'],
-            discountLabel: reward['discountLabel'],
-            categoryLabel: reward['categoryLabel'],
+            discountLabel: '${reward['discountInPercents'] ?? 0}%',
+            categoryLabel: reward['category'],
           ),
         );
       },

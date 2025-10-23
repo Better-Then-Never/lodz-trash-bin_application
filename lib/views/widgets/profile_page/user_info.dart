@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:lodz_trash_bin/services/auth_service.dart';
 import 'package:lodz_trash_bin/services/user_service.dart';
 import 'package:lodz_trash_bin/views/pages/auth_page.dart';
@@ -45,7 +44,11 @@ class UserInfo extends StatelessWidget {
           ],
         ),
         IconButton(
-          icon: const Icon(Icons.logout, color: Colors.redAccent, size: 28),
+          icon: const Icon(
+            Icons.logout,
+            color: Color.fromARGB(255, 84, 84, 84),
+            size: 28,
+          ),
           tooltip: 'Logout',
           onPressed: () async {
             await authService.logout();

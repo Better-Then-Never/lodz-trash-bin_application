@@ -16,53 +16,6 @@ class ShopPage extends StatefulWidget {
 class _ShopPageState extends State<ShopPage> {
   bool showRewards = true;
 
-  // TODO: Replace with actual data
-  final List<Map<String, dynamic>> rewards = [
-    {
-      'title': 'Rabat na wypierdolenie',
-      'subtitle': '50% Rabat na wypierdolenie z Polski',
-      'discountLabel': '50%',
-      'categoryLabel': 'Transport',
-      'points': 500,
-    },
-    {
-      'title': 'Kubek Eko',
-      'subtitle': 'Kubek z recyklingu',
-      'discountLabel': '10%',
-      'categoryLabel': 'Home',
-      'points': 200,
-    },
-    {
-      'title': 'Torba Eko',
-      'subtitle': 'Torba na zakupy wielokrotnego użytku',
-      'discountLabel': '15%',
-      'categoryLabel': 'Shopping',
-      'points': 300,
-    },
-    {
-      'title': 'Zestaw Roślin',
-      'subtitle': 'Mini zestaw do domowego ogródka',
-      'discountLabel': '5%',
-      'categoryLabel': 'Garden',
-      'points': 400,
-    },
-  ];
-
-  final List<Map<String, dynamic>> redeemedRewards = [
-    {
-      'title': 'Kubek Eko',
-      'subtitle': 'Odebrano 12.10.2025',
-      'discountLabel': '10%',
-      'categoryLabel': 'Home',
-    },
-    {
-      'title': 'Torba Eko',
-      'subtitle': 'Odebrano 03.09.2025',
-      'discountLabel': '15%',
-      'categoryLabel': 'Shopping',
-    },
-  ];
-
   @override
   Widget build(BuildContext context) {
     final double screenWidth = MediaQuery.of(context).size.width;
@@ -70,6 +23,7 @@ class _ShopPageState extends State<ShopPage> {
     final userService = Provider.of<UserService>(context);
     final offerService = Provider.of<OfferService>(context);
     final offers = offerService.offers;
+    final rewards = userService.rewards;
 
     return SafeArea(
       child: Padding(
@@ -143,8 +97,10 @@ class _ShopPageState extends State<ShopPage> {
               child: AnimatedSwitcher(
                 duration: const Duration(milliseconds: 250),
                 child: showRewards
-                    ? ShopRewardsList(rewards: offers)
-                    : ShopRedeemedList(rewards: []),
+                    ? ShopRewardsList(key: ValueKey(userService.rewards.length))
+                    : ShopRedeemedList(
+                        key: ValueKey(userService.rewards.length),
+                      ),
               ),
             ),
           ],

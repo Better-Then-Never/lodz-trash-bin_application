@@ -28,6 +28,18 @@ class UserService extends ChangeNotifier {
   int get currentMonthSessions =>
       _currentUserData?['currentMonthSessions'] ?? 0;
 
+  UserService() {
+    _auth.authStateChanges().listen((user) async {
+      if (user != null) {
+        await init();
+      } else {
+        _currentUserData = null;
+        _rewards = [];
+        notifyListeners();
+      }
+    });
+  }
+
   Future<void> init() async {
     final user = _auth.currentUser;
     if (user == null) return;

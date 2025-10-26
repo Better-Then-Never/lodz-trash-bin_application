@@ -159,14 +159,13 @@ class _AuthPageState extends State<AuthPage> {
                                   ),
                                 );
                               }
-                              final userService = UserService();
-                              await userService.init();
+                              final userService = context.read<UserService>();
                               Navigator.pushReplacement(
                                 context,
                                 MaterialPageRoute(
                                   builder: (_) => ChangeNotifierProvider.value(
                                     value: userService,
-                                    child: const NavigationView(),
+                                    child: NavigationView(),
                                   ),
                                 ),
                               );
@@ -186,8 +185,7 @@ class _AuthPageState extends State<AuthPage> {
                                   ),
                                 );
                               }
-                              final userService = UserService();
-                              await userService.init();
+                              final userService = context.read<UserService>();
                               Navigator.pushReplacement(
                                 context,
                                 MaterialPageRoute(

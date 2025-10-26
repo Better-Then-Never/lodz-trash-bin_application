@@ -2,7 +2,9 @@ import 'dart:async';
 
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_lucide/flutter_lucide.dart';
 import 'package:lodz_trash_bin/services/user_service.dart';
+import 'package:lodz_trash_bin/views/widgets/common/custom_card.dart';
 
 class DisposeSessionPage extends StatefulWidget {
   final String binId;
@@ -84,6 +86,7 @@ class _DisposeSessionPageState extends State<DisposeSessionPage> {
   @override
   Widget build(BuildContext context) {
     final screenHeight = MediaQuery.of(context).size.height;
+    final screenWidth = MediaQuery.of(context).size.width;
 
     return SafeArea(
       top: false,
@@ -95,7 +98,7 @@ class _DisposeSessionPageState extends State<DisposeSessionPage> {
             height: screenHeight * 0.06,
             child: ElevatedButton(
               style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.black,
+                backgroundColor: const Color.fromARGB(255, 0, 0, 0),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(8),
                 ),
@@ -115,43 +118,76 @@ class _DisposeSessionPageState extends State<DisposeSessionPage> {
             ),
           ),
         ),
-        body: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-          child: Center(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                SizedBox(height: screenHeight * 0.25),
-                const FittedBox(
-                  fit: BoxFit.scaleDown,
-                  alignment: Alignment.centerLeft,
-                  child: Text(
-                    'Wrzuć śmieci do kosza',
-                    style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-                  ),
-                ),
-                const FittedBox(
-                  fit: BoxFit.scaleDown,
-                  alignment: Alignment.centerLeft,
-                  child: Text(
-                    'Za to dostaniesz punkty',
-                    style: TextStyle(fontSize: 16, color: Colors.grey),
-                  ),
-                ),
-                FittedBox(
-                  fit: BoxFit.scaleDown,
-                  alignment: Alignment.centerLeft,
-                  child: Text(
-                    '+$pointsToAdd',
-                    style: TextStyle(
-                      fontSize: screenHeight * 0.1,
-                      fontWeight: FontWeight.bold,
+        body: Column(
+          children: [
+            SizedBox(height: screenHeight * 0.2),
+            CustomCard(
+              width: double.infinity,
+              outerPadding: EdgeInsetsGeometry.symmetric(horizontal: 16.0),
+              child: IntrinsicHeight(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    const Text(
+                      'Wrzuć śmieci do kosza',
+                      style: TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
-                  ),
+                    const SizedBox(height: 4),
+                    const Text(
+                      'Za to dostaniesz punkty',
+                      style: TextStyle(fontSize: 16, color: Colors.grey),
+                    ),
+                    const SizedBox(height: 8),
+                    FittedBox(
+                      fit: BoxFit.scaleDown,
+                      child: Text(
+                        '+$pointsToAdd',
+                        style: TextStyle(
+                          fontSize: MediaQuery.of(context).size.height * 0.1,
+                          fontWeight: FontWeight.w400,
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
-              ],
+              ),
             ),
-          ),
+            SizedBox(height: screenHeight * 0.02),
+            CustomCard(
+              width: double.infinity,
+              outerPadding: EdgeInsetsGeometry.symmetric(horizontal: 16.0),
+              child: IntrinsicHeight(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      '📱 Bin ID: #BTN-1411-UL',
+                      style: TextStyle(fontSize: 18, color: Colors.grey),
+                    ),
+                    const SizedBox(height: 4),
+                    const Text(
+                      '📍 Biblioteka Uniwersytetu Łódzkiego',
+                      style: TextStyle(fontSize: 18, color: Colors.grey),
+                    ),
+                    SizedBox(height: screenHeight * 0.02),
+                    Align(
+                      alignment: Alignment.center,
+                      child: Image.asset(
+                        'assets/images/ecopoint-logo.png',
+                        width: screenWidth * 0.2,
+                        height: screenWidth * 0.2,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
         ),
       ),
     );

@@ -1,5 +1,5 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:lodz_trash_bin/services/auth_service.dart';
 import 'package:lodz_trash_bin/services/user_service.dart';
 import 'package:lodz_trash_bin/views/pages/auth_page.dart';
 
@@ -10,7 +10,7 @@ class UserInfo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final authService = AuthService();
+    final FirebaseAuth _auth = FirebaseAuth.instance;
 
     final name = userService.name ?? 'Guest';
     final username = userService.username ?? 'username';
@@ -51,7 +51,7 @@ class UserInfo extends StatelessWidget {
           ),
           tooltip: 'Logout',
           onPressed: () async {
-            await authService.logout();
+            await _auth.signOut();
             Navigator.pushReplacement(
               context,
               MaterialPageRoute(builder: (_) => AuthPage()),

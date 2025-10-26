@@ -26,7 +26,6 @@ class _ShowRewardPageState extends State<ShowRewardPage> {
   Widget build(BuildContext context) {
     final double screenWidth = MediaQuery.of(context).size.width;
     final double screenHeight = MediaQuery.of(context).size.height;
-    // TODO: Replace with actual data
     return SafeArea(
       top: false,
       child: Scaffold(

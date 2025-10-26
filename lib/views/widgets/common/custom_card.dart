@@ -9,6 +9,7 @@ class CustomCard extends StatelessWidget {
     this.color,
     this.withBorder = true,
     this.borderColor,
+    this.borderWidth = 0.5,
     this.borderRadius = 16,
     this.padding = const EdgeInsets.all(16.0),
     this.outerPadding = const EdgeInsets.all(8.0),
@@ -19,6 +20,7 @@ class CustomCard extends StatelessWidget {
   final double? width;
   final Color? color;
   final Color? borderColor;
+  final double? borderWidth;
   final double borderRadius;
   final bool withBorder;
   final EdgeInsetsGeometry padding;

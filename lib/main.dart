@@ -6,6 +6,7 @@ import 'package:lodz_trash_bin/services/offer_service.dart';
 import 'package:lodz_trash_bin/services/user_service.dart';
 import 'package:lodz_trash_bin/views/pages/profile_page.dart';
 import 'package:lodz_trash_bin/views/pages/qr_scanner_page.dart';
+import 'package:lodz_trash_bin/views/pages/ranking_page.dart';
 import 'package:lodz_trash_bin/views/pages/root_page.dart';
 import 'package:lodz_trash_bin/views/pages/shop_page.dart';
 import 'package:lodz_trash_bin/views/widgets/navigation_bar/navigation_bar_button.dart';
@@ -65,6 +66,7 @@ class _NavigationViewState extends State<NavigationView> {
   final List<Widget> _pages = const [
     ShopPage(),
     QRScannerPage(),
+    RankingPage(),
     ProfilePage(),
   ];
 
@@ -105,6 +107,13 @@ class _NavigationViewState extends State<NavigationView> {
               CustomNavigationBarButton(
                 onTap: () => setState(() => _selectedIndex = 2),
                 isSelected: _selectedIndex == 2,
+                icon: LucideIcons.trophy,
+                label: 'Ranking',
+                colorScheme: colorScheme,
+              ),
+              CustomNavigationBarButton(
+                onTap: () => setState(() => _selectedIndex = 3),
+                isSelected: _selectedIndex == 3,
                 icon: LucideIcons.user,
                 label: 'Profil',
                 colorScheme: colorScheme,

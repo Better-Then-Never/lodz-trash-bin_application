@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_lucide/flutter_lucide.dart';
-import 'package:lodz_trash_bin/services/user_service.dart';
 import 'package:lodz_trash_bin/views/pages/show_reward_page.dart';
 import 'package:lodz_trash_bin/views/widgets/common/custom_card.dart';
 

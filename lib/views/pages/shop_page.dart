@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:lodz_trash_bin/services/offer_service.dart';
 import 'package:lodz_trash_bin/services/user_service.dart';
 import 'package:lodz_trash_bin/views/widgets/shop_page/shop_my_points_count.dart';
 import 'package:lodz_trash_bin/views/widgets/shop_page/shop_rewards_list.dart';
 import 'package:lodz_trash_bin/views/widgets/shop_page/shop_redeemed_list.dart';
-import 'package:provider/provider.dart'; // new mock list
+import 'package:provider/provider.dart';
 
 class ShopPage extends StatefulWidget {
   const ShopPage({super.key});
@@ -21,9 +20,6 @@ class _ShopPageState extends State<ShopPage> {
     final double screenWidth = MediaQuery.of(context).size.width;
     final double screenHeight = MediaQuery.of(context).size.height;
     final userService = Provider.of<UserService>(context);
-    final offerService = Provider.of<OfferService>(context);
-    final offers = offerService.offers;
-    final rewards = userService.rewards;
 
     return SafeArea(
       child: Padding(

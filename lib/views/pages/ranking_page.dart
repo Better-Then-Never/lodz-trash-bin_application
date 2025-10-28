@@ -62,7 +62,7 @@ class _RankingPageState extends State<RankingPage> {
               children: [
                 Expanded(
                   child: ToggleButton(
-                    label: "Ranking",
+                    label: "Użytkownicy",
                     selected: isLeaderboard,
                     onTap: () => setState(() => isLeaderboard = true),
                   ),

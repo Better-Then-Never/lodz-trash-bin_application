@@ -6,14 +6,13 @@ import 'package:lodz_trash_bin/views/widgets/common/custom_card.dart';
 
 class DisposeSessionPage extends StatefulWidget {
   final String binId;
+  final UserService userService;
 
   const DisposeSessionPage({
     super.key,
     required this.binId,
     required this.userService,
   });
-
-  final UserService userService;
 
   @override
   State<DisposeSessionPage> createState() => _DisposeSessionPageState();
@@ -25,7 +24,8 @@ class _DisposeSessionPageState extends State<DisposeSessionPage> {
   int pointsToAdd = 0;
 
   StreamSubscription<DatabaseEvent>? _timesDisposedSubscription;
-
+  StreamSubscription<DatabaseEvent>? _sessionStatusSubscription;
+  bool _isDisposing = false;
   @override
   void initState() {
     super.initState();
@@ -35,49 +35,71 @@ class _DisposeSessionPageState extends State<DisposeSessionPage> {
         .child('BinsData')
         .child(widget.binId);
 
-    _updateLedStatus(true);
-
-    binRef.child('times_disposed').get().then((snapshot) {
-      final value = snapshot.value;
-      if (value is int) {
-        startingTimesDisposed = value;
-      }
-
-      _timesDisposedSubscription = binRef
-          .child('times_disposed')
-          .onValue
-          .listen((event) {
-            final currentValue = event.snapshot.value;
-            if (currentValue is int) {
-              final added = currentValue - startingTimesDisposed;
-              if (added > pointsToAdd) {
-                setState(() {
-                  pointsToAdd = added;
-                });
-              }
-            }
-          });
-    });
+    _initializeSession();
   }
 
-  Future<void> _updateLedStatus(bool status) async {
+  Future<void> _initializeSession() async {
+    await binRef.child('trashUnitsCounter').set(0);
+
+    _timesDisposedSubscription = binRef
+        .child('trashUnitsCounter')
+        .onValue
+        .listen((event) {
+          final currentValue = event.snapshot.value;
+          if (currentValue != null) {
+            final current = int.tryParse(currentValue.toString()) ?? 0;
+
+            setState(() => pointsToAdd = current);
+          }
+        });
+
+    _sessionStatusSubscription = binRef
+        .child('isSessionStarted')
+        .onValue
+        .listen((event) {
+          final status = event.snapshot.value;
+          final isSessionStarted = status is bool
+              ? status
+              : status.toString() == 'true';
+          if (!isSessionStarted) {
+            _closeSessionExternally();
+          }
+        });
+
+    await _updateSessionStatus(true);
+  }
+
+  Future<void> _updateSessionStatus(bool status) async {
     try {
-      await binRef.child('led_status').set(status);
-      print('LED status updated: $status');
+      await binRef.child('isSessionStarted').set(status);
+      debugPrint('session started status updated: $status');
     } catch (e) {
-      print('Error updating LED status: $e');
+      debugPrint('error updating session started status: $e');
+    }
+  }
+
+  Future<void> _closeSessionExternally() async {
+    if (_isDisposing) return;
+    _isDisposing = true;
+
+    await _updateSessionStatus(false);
+    if (mounted) {
+      Navigator.of(context).pop(pointsToAdd);
     }
   }
 
   @override
   void dispose() {
     _timesDisposedSubscription?.cancel();
-    _updateLedStatus(false);
+    _sessionStatusSubscription?.cancel();
+    _updateSessionStatus(false);
+
     final userService = widget.userService;
     if (pointsToAdd > 0) {
       userService.changePoints(pointsToAdd);
       userService.incrementSessions();
     }
+
     super.dispose();
   }
 
@@ -101,10 +123,7 @@ class _DisposeSessionPageState extends State<DisposeSessionPage> {
                   borderRadius: BorderRadius.circular(8),
                 ),
               ),
-              onPressed: () {
-                _updateLedStatus(false);
-                Navigator.of(context).pop();
-              },
+              onPressed: _closeSessionExternally,
               child: const Text(
                 'Już wszystko :)',
                 style: TextStyle(
@@ -121,7 +140,7 @@ class _DisposeSessionPageState extends State<DisposeSessionPage> {
             SizedBox(height: screenHeight * 0.2),
             CustomCard(
               width: double.infinity,
-              outerPadding: EdgeInsetsGeometry.symmetric(horizontal: 16.0),
+              outerPadding: const EdgeInsets.symmetric(horizontal: 16.0),
               child: IntrinsicHeight(
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
@@ -157,7 +176,7 @@ class _DisposeSessionPageState extends State<DisposeSessionPage> {
             SizedBox(height: screenHeight * 0.02),
             CustomCard(
               width: double.infinity,
-              outerPadding: EdgeInsetsGeometry.symmetric(horizontal: 16.0),
+              outerPadding: const EdgeInsets.symmetric(horizontal: 16.0),
               child: IntrinsicHeight(
                 child: Column(
                   mainAxisSize: MainAxisSize.min,

@@ -46,10 +46,19 @@ class _QRScannerPageState extends State<QRScannerPage> {
                 userService: userService,
               ),
             ),
-          ).then((_) {
+          ).then((result) {
             setState(() {
               _isScanning = true;
             });
+
+            if (result != null && result is int && result > 0) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text('Udało się! Zarobiłeś $result punktów!'),
+                  duration: const Duration(seconds: 2),
+                ),
+              );
+            }
           });
         });
       }

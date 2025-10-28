@@ -146,12 +146,14 @@ class _AuthPageState extends State<AuthPage> {
                           onPressed: () async {
                             final email = _emailController.text.trim();
                             final password = _passwordController.text.trim();
-
+                            final userService = context.read<UserService>();
                             if (isLogin) {
                               final user = await _authService.login(
                                 email,
                                 password,
                               );
+                              userService.init();
+                              if (!mounted) return;
                               if (user != null) {
                                 ScaffoldMessenger.of(context).showSnackBar(
                                   const SnackBar(
@@ -159,7 +161,6 @@ class _AuthPageState extends State<AuthPage> {
                                   ),
                                 );
                               }
-                              final userService = context.read<UserService>();
                               Navigator.pushReplacement(
                                 context,
                                 MaterialPageRoute(
@@ -178,6 +179,8 @@ class _AuthPageState extends State<AuthPage> {
                                 name,
                                 username,
                               );
+                              userService.init();
+                              if (!mounted) return;
                               if (user != null) {
                                 ScaffoldMessenger.of(context).showSnackBar(
                                   const SnackBar(
@@ -185,7 +188,7 @@ class _AuthPageState extends State<AuthPage> {
                                   ),
                                 );
                               }
-                              final userService = context.read<UserService>();
+
                               Navigator.pushReplacement(
                                 context,
                                 MaterialPageRoute(

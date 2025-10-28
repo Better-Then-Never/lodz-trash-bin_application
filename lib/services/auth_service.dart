@@ -18,13 +18,17 @@ class AuthService {
       );
       final user = userCredential.user;
 
+      final firstAchievmentRef = _firestore
+          .collection('achievements')
+          .doc('Zs3eHtAdt9FAzinOf8qx');
+
       if (user != null) {
         await _firestore.collection('users').doc(user.uid).set({
           'uid': user.uid,
           'email': email,
           'name': name,
           'username': username,
-          'achievements': [],
+          'achievements': [firstAchievmentRef],
           'rewards': [],
           'pointsBalance': 0,
           'pointsEarned': 0,

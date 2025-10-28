@@ -1,8 +1,6 @@
 import 'dart:async';
-
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_lucide/flutter_lucide.dart';
 import 'package:lodz_trash_bin/services/user_service.dart';
 import 'package:lodz_trash_bin/views/widgets/common/custom_card.dart';
 
